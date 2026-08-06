@@ -1,4 +1,4 @@
-export const metadata = { title: "Contact — Harvest Connect" };
+export const metadata = { title: "Contact — Gardener's Choice" };
 
 export default function Contact() {
   return (
@@ -12,7 +12,7 @@ export default function Contact() {
 
         <form
           className="form"
-          action="mailto:hello@harvestconnect.org"
+          action="mailto:hello@gardenerschoice.org"
           method="post"
           encType="text/plain"
         >
@@ -57,7 +57,7 @@ export default function Contact() {
           <p className="form-note">
             This form opens your mail app. If it doesn&rsquo;t open, email us
             directly at{" "}
-            <a href="mailto:hello@harvestconnect.org">hello@harvestconnect.org</a>.
+            <a href="mailto:hello@gardenerschoice.org">hello@gardenerschoice.org</a>.
           </p>
         </form>
       </div>

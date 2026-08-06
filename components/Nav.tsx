@@ -4,9 +4,9 @@ export default function Nav() {
   return (
     <header className="nav">
       <div className="nav-inner">
-        <Link href="/" className="brand" aria-label="Harvest Connect home">
+        <Link href="/" className="brand" aria-label="Gardener's Choice home">
           <span className="brand-mark" aria-hidden="true" />
-          Harvest Connect
+          Gardener&rsquo;s Choice
         </Link>
         <nav>
           <ul className="nav-links">

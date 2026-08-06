@@ -11,7 +11,7 @@ export default function Home() {
         <div className="container">
           <h1>Find food. Share harvest. Look out for each other.</h1>
           <p className="lede">
-            Harvest Connect is a free community map of food banks, pantries, and
+            Gardener&rsquo;s Choice is a free community map of food banks, pantries, and
             harvesting sites. Whether you need a meal tonight or you have a tree
             full of fruit to share, this is where we find each other.
           </p>

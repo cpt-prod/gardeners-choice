@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Donate — Harvest Connect",
+  title: "Donate — Gardener's Choice",
   description:
     "Donate to a California food bank. Every dollar helps a neighbor eat. 100% goes to food distribution.",
 };

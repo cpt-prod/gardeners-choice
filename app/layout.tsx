@@ -5,7 +5,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Harvest Connect — find local food banks and free harvest sites",
+  title: "Gardener's Choice — find local food banks and free harvest sites",
   description:
     "A community map of food banks, pantries, and free harvesting sites. Built so neighbors can find help, share resources, and stay fed.",
 };

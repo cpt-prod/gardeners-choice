@@ -1,13 +1,13 @@
-export const metadata = { title: "About — Harvest Connect" };
+export const metadata = { title: "About — Gardener's Choice" };
 
 export default function About() {
   return (
     <>
       <section>
         <div className="container">
-          <h1>About Harvest Connect</h1>
+          <h1>About Gardener&rsquo;s Choice</h1>
           <p style={{ fontSize: "1.1rem", maxWidth: "65ch" }}>
-            Harvest Connect started with a simple frustration: knowing where to
+            Gardener&rsquo;s Choice started with a simple frustration: knowing where to
             get food shouldn&rsquo;t be one. We&rsquo;re building an open,
             community-maintained map that puts the closest pantry, the ripest
             fig tree, and the right person to call for help &mdash; all in one

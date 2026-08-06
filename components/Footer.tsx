@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-inner">
         <div>
-          <strong>Harvest Connect</strong>
+          <strong>Gardener&rsquo;s Choice</strong>
           <div style={{ opacity: 0.8, fontSize: "0.9rem" }}>
             A community project. No one should go hungry.
           </div>
@@ -27,7 +27,7 @@ export default function Footer() {
             Support Bianca&rsquo;s project &rarr;
           </a>
           <div style={{ opacity: 0.7, fontSize: "0.8rem", marginTop: "0.5rem" }}>
-            100% of donations go to keeping Harvest Connect free and growing.
+            100% of donations go to keeping Gardener&rsquo;s Choice free and growing.
           </div>
         </div>
       </div>

@@ -31,7 +31,7 @@ export const sites: Site[] = [
     lat: 38.5611,
     lng: -121.4693,
     phone: "+1-916-555-0188",
-    email: "grow@oakparkharvest.org",
+    email: "grow@oakparkgardeners.org",
     hours: "Sat 8:00 AM – 12:00 PM (volunteer hours)",
     description:
       "Pick-your-own community garden. Take what you need, leave what you can.",

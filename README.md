@@ -1,4 +1,4 @@
-# Harvest Connect
+# Gardener's Choice
 
 A community map of local food banks, pantries, and free harvesting sites.
 Built for neighbors helping neighbors — no signup, no paywall, no tracking.

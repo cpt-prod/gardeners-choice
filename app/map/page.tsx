@@ -17,7 +17,7 @@ const MapClient = dynamic(() => import("@/components/MapClient"), {
   ),
 });
 
-export const metadata = { title: "Map — Harvest Connect" };
+export const metadata = { title: "Map — Gardener's Choice" };
 
 export default function MapPage() {
   return <MapClient sites={sites} />;
