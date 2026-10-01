@@ -3,6 +3,7 @@ import "./globals.css";
 import "leaflet/dist/leaflet.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Gardener's Choice — find local food banks and free harvest sites",
@@ -17,10 +18,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <Nav />
-        <main>{children}</main>
-        <Footer />
+      <body className="root-layout">
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
