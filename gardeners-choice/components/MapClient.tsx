@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { Site } from "@/lib/types";
+import MapSidePanel from "./MapSidePanel";
 
-// Fix default Leaflet icon paths (Next bundles them; we need explicit URLs)
+// Fix default Leaflet icon paths
 const foodBankIcon = new L.DivIcon({
   className: "hc-marker hc-marker-food",
   html: '<div style="background:#2f5d3a;width:22px;height:22px;border-radius:50%;border:3px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>',
@@ -25,6 +26,8 @@ type Filter = "all" | "food-bank" | "harvest";
 export default function MapClient({ sites }: { sites: Site[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [mounted, setMounted] = useState(false);
+  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
+
   useEffect(() => setMounted(true), []);
 
   const filtered = useMemo(
@@ -32,7 +35,6 @@ export default function MapClient({ sites }: { sites: Site[] }) {
     [filter, sites]
   );
 
-  // Center map on the average of filtered sites
   const center: [number, number] = useMemo(() => {
     if (filtered.length === 0) return [38.5816, -121.4944];
     const lat = filtered.reduce((a, s) => a + s.lat, 0) / filtered.length;
@@ -42,19 +44,28 @@ export default function MapClient({ sites }: { sites: Site[] }) {
 
   if (!mounted) {
     return (
-      <div className="map-wrap" style={{ display: "grid", placeItems: "center" }}>
+      <div style={{ display: "grid", placeItems: "center", height: "100vh" }}>
         <p>Loading map…</p>
       </div>
     );
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 64px)" }}>
+    <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
+      <MapSidePanel
+        sites={sites}
+        selectedSiteId={selectedSiteId}
+        onSelectSite={setSelectedSiteId}
+      />
+
       <div
+        className="glass-panel"
         style={{
+          position: "absolute",
+          right: "20px",
+          top: "20px",
+          zIndex: 1000,
           padding: "0.75rem 1.25rem",
-          background: "var(--c-surface)",
-          borderBottom: "1px solid var(--c-line)",
           display: "flex",
           gap: "0.5rem",
           flexWrap: "wrap",
@@ -85,70 +96,47 @@ export default function MapClient({ sites }: { sites: Site[] }) {
         </button>
       </div>
 
-      <div className="map-wrap" style={{ flex: 1 }}>
-        <MapContainer
-          className="map-container"
-          center={center}
-          zoom={12}
-          scrollWheelZoom
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+      <MapContainer
+        className="map-container"
+        center={center}
+        zoom={12}
+        scrollWheelZoom
+        style={{ width: "100%", height: "100%" }}
+      >
+        <MapController selectedSiteId={selectedSiteId} sites={sites} />
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {filtered.map((site) => (
+          <Marker
+            key={site.id}
+            position={[site.lat, site.lng]}
+            icon={site.type === "food-bank" ? foodBankIcon : harvestIcon}
+            eventHandlers={{
+              click: () => setSelectedSiteId(site.id),
+            }}
           />
-          {filtered.map((site) => (
-            <Marker
-              key={site.id}
-              position={[site.lat, site.lng]}
-              icon={site.type === "food-bank" ? foodBankIcon : harvestIcon}
-            >
-              <Popup>
-                <div>
-                  <span
-                    className={`badge ${
-                      site.type === "food-bank" ? "badge-food" : "badge-harvest"
-                    }`}
-                  >
-                    {site.type === "food-bank" ? "Food bank" : "Harvest site"}
-                  </span>
-                  <h3 style={{ marginTop: "0.5rem" }}>{site.name}</h3>
-                  <p className="popup-meta">
-                    {site.address}, {site.city}, {site.state} {site.zip}
-                    <br />
-                    <strong>Hours:</strong> {site.hours}
-                  </p>
-                  <p style={{ fontSize: "0.9rem", margin: "0 0 0.5rem" }}>
-                    {site.description}
-                  </p>
-                  {site.resources.length > 0 && (
-                    <ul className="popup-resources">
-                      {site.resources.map((r) => (
-                        <li key={r}>{r}</li>
-                      ))}
-                    </ul>
-                  )}
-                  <div className="popup-actions">
-                    <a className="btn btn-primary" href={`tel:${site.phone}`}>
-                      Call
-                    </a>
-                    <a className="btn btn-ghost" href={`mailto:${site.email}`}>
-                      Email
-                    </a>
-                    <a
-                      className="btn btn-ghost"
-                      href={`https://www.openstreetmap.org/?mlat=${site.lat}&mlon=${site.lng}#map=17/${site.lat}/${site.lng}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Directions
-                    </a>
-                  </div>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      </div>
+        ))}
+      </MapContainer>
     </div>
   );
+}
+
+function MapController({ selectedSiteId, sites }: { selectedSiteId: string | null; sites: Site[] }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (selectedSiteId) {
+      const site = sites.find(s => s.id === selectedSiteId);
+      if (site) {
+        map.flyTo([site.lat, site.lng], 15, {
+          duration: 1.5,
+          easeLinearity: 0.25
+        });
+      }
+    }
+  }, [selectedSiteId, map, sites]);
+
+  return null;
 }

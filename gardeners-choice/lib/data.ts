@@ -163,6 +163,47 @@ export const sites: Site[] = [
       "Advocacy",
       "Volunteer opportunities",
     ],
+    isVerified: true,
+    foods: [
+      {
+        id: "accfb-csa-box",
+        name: "Weekly produce box (CSA-style)",
+        unit: "per box",
+        priceTokens: 18,
+        category: "csa",
+        description:
+          "A weekly box of fresh produce sourced from regional farms. Mixed seasonal vegetables and fruit. Pickup at the Oakland warehouse.",
+        inSeason: true,
+        quantity: 5,
+        harvestDate: new Date().toISOString(),
+        tags: ["organic", "certified"],
+      },
+      {
+        id: "accfb-bulk-tomatoes",
+        name: "Bulk canning tomatoes",
+        unit: "per 10 lb",
+        priceTokens: 22,
+        category: "produce",
+        description:
+          "Canning-grade tomatoes sold by the case in late summer. Great for sauces and freezing.",
+        inSeason: false,
+        quantity: 2,
+        harvestDate: new Date(Date.now() - 86400000 * 2).toISOString(),
+        tags: ["heirloom"],
+      },
+      {
+        id: "accfb-surprise",
+        name: "Community Harvest Surprise Bag",
+        unit: "per bag",
+        priceTokens: 10,
+        category: "surprise-bag",
+        description: "A curated bag of seasonal surplus. Great value, random contents!",
+        inSeason: true,
+        quantity: 12,
+        harvestDate: new Date().toISOString(),
+        tags: ["organic"],
+      },
+    ],
   },
   {
     id: "alameda-food-bank",
@@ -234,6 +275,38 @@ export const sites: Site[] = [
       "Affordable-housing food deliveries",
       "Senior housing deliveries",
     ],
+    foods: [
+      {
+        id: "hope-rescue-box",
+        name: "Mixed rescue produce box",
+        unit: "per box (~12 lb)",
+        priceTokens: 12,
+        category: "csa",
+        description:
+          "A box of rescued produce — contents vary by week. Sold at-cost to fund logistics for free distributions.",
+        inSeason: true,
+      },
+      {
+        id: "hope-bulk-greens",
+        name: "Bulk leafy greens",
+        unit: "per 5 lb",
+        priceTokens: 8,
+        category: "produce",
+        description:
+          "Rescued leafy greens (kale, chard, lettuce). Best within a few days of pickup.",
+        inSeason: true,
+      },
+      {
+        id: "hope-bread-bag",
+        name: "Day-old bread bag",
+        unit: "per bag",
+        priceTokens: 3,
+        category: "prepared",
+        description:
+          "Rescued bread and baked goods. Limited quantities each Saturday distribution.",
+        inSeason: true,
+      },
+    ],
   },
   {
     id: "svdp-alameda-county",
@@ -281,6 +354,48 @@ export const sites: Site[] = [
       "Culinary employment training",
       "Food business incubator (E14th Eatery + Kitchen)",
       "Wellness education",
+    ],
+    foods: [
+      {
+        id: "mandela-csa",
+        name: "Mandela Produce Distribution weekly box",
+        unit: "per box",
+        priceTokens: 20,
+        category: "csa",
+        description:
+          "Subsidized CSA box from West Oakland farmers. Contents rotate seasonally. Pickup at 7th Street.",
+        inSeason: true,
+      },
+      {
+        id: "mandela-citrus",
+        name: "Satsuma mandarins",
+        unit: "per 3 lb bag",
+        priceTokens: 7,
+        category: "produce",
+        description:
+          "Sweet, easy-peel mandarins from a partner orchard. Available winter only.",
+        inSeason: false,
+      },
+      {
+        id: "mandela-greens",
+        name: "Collard & mustard greens bunch",
+        unit: "per bunch",
+        priceTokens: 4,
+        category: "produce",
+        description:
+          "Local greens harvested the morning of the produce stand. Sold by the bunch.",
+        inSeason: true,
+      },
+      {
+        id: "mandela-stone-fruit",
+        name: "Stone fruit mix (peaches/plums)",
+        unit: "per 2 lb",
+        priceTokens: 9,
+        category: "produce",
+        description:
+          "Summer stone fruit from a Sunol orchard. Tree-ripened, sold in mixed boxes.",
+        inSeason: false,
+      },
     ],
   },
   {
@@ -332,6 +447,38 @@ export const sites: Site[] = [
       "Children and youth programs",
       "Medical respite (Arnold's Place)",
     ],
+    foods: [
+      {
+        id: "apc-dig-deep-box",
+        name: "Dig Deep Farms produce box",
+        unit: "per box",
+        priceTokens: 16,
+        category: "csa",
+        description:
+          "Weekly box from the on-site Dig Deep Farms urban farm. Greens, roots, herbs.",
+        inSeason: true,
+      },
+      {
+        id: "apc-seedlings",
+        name: "Ploughshares starter seedlings",
+        unit: "per 6-pack",
+        priceTokens: 6,
+        category: "pantry",
+        description:
+          "Vegetable and herb seedlings started at the Ploughshares Nursery. Great for home gardens.",
+        inSeason: true,
+      },
+      {
+        id: "apc-hot-sauce",
+        name: "Arnold's Place hot sauce",
+        unit: "per 5 oz bottle",
+        priceTokens: 5,
+        category: "prepared",
+        description:
+          "Small-batch hot sauce made by residents of the culinary program. Reused bottles.",
+        inSeason: true,
+      },
+    ],
   },
   {
     id: "salvation-army-hayward",
@@ -357,6 +504,18 @@ export const sites: Site[] = [
       "Sunday evening community dinner",
       "Worship and Bible study",
       "Disaster/PSPS response",
+    ],
+    foods: [
+      {
+        id: "salvation-pantry-tier",
+        name: "Choose-what-you-tokens pantry box",
+        unit: "per box",
+        priceTokens: 5,
+        category: "pantry",
+        description:
+          "Pay-what-you-can pantry tier. Pick up a curated box of staples and fresh items.",
+        inSeason: true,
+      },
     ],
   },
 ];

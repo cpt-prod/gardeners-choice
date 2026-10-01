@@ -3,9 +3,9 @@
    Mobile-first. */
 
 :root {
-  --c-bg: #fbf7ef;
+  --c-bg: #fdfbf7;
   --c-surface: #ffffff;
-  --c-ink: #1f2a1d;
+  --c-ink: #121812;
   --c-ink-soft: #4a5a47;
   --c-line: #e5dccb;
   --c-forest: #2f5d3a;
@@ -13,10 +13,76 @@
   --c-gold: #d99e2b;
   --c-gold-soft: #f3e1a8;
   --c-rust: #b14a2b;
-  --c-shadow: 0 1px 2px rgba(31, 42, 29, 0.06), 0 4px 12px rgba(31, 42, 29, 0.05);
-  --radius: 12px;
+  --c-obsidian: #121812;
+  --c-cream-soft: #fdfbf7;
+  --c-glass: rgba(255, 255, 255, 0.7);
+  --c-glass-border: rgba(255, 255, 255, 0.3);
+  --c-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --radius: 16px;
   --maxw: 1120px;
 }
+
+/* Living Markers Animation */
+@keyframes marker-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(47, 93, 58, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(47, 93, 58, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(47, 93, 58, 0);
+  }
+}
+
+@keyframes marker-pulse-gold {
+  0% {
+    box-shadow: 0 0 0 0 rgba(217, 158, 43, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(217, 158, 43, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(217, 158, 43, 0);
+  }
+}
+
+.hc-marker-food {
+  animation: marker-pulse 2s infinite;
+}
+
+.hc-marker-harvest {
+  animation: marker-pulse-gold 2s infinite;
+}
+
+/* Glassmorphism Utility */
+.glass-panel {
+  backdrop-filter: blur(12px) saturate(180%);
+  background: var(--c-glass);
+  border: 1px solid var(--c-glass-border);
+  box-shadow: var(--c-shadow);
+  border-radius: var(--radius);
+}
+
+/* Layout Fixes */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.root-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 
 * {
   box-sizing: border-box;
@@ -246,4 +312,161 @@ section.tight { padding: 2rem 0; }
   .nav-links { gap: 0.85rem; font-size: 0.95rem; }
   .hero { padding: 2.5rem 0 2rem; }
   .footer-inner { flex-direction: column; }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   Marketplace, tokens, barter — added alongside the existing palette.
+   No new --c-* tokens; everything reuses the existing variables.
+   ────────────────────────────────────────────────────────────────────── */
+
+.demo-banner {
+  background: #f6e9c5;
+  border: 1px solid var(--c-gold-soft);
+  color: #6a4d10;
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0 1.25rem;
+  font-size: 0.95rem;
+}
+
+/* Marketplace toolbar (chip rows) */
+.marketplace-toolbar {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  box-shadow: var(--c-shadow);
+}
+.toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+.chip {
+  display: inline-block;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--c-forest);
+  background: transparent;
+  color: var(--c-forest-dark);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.chip:hover { background: var(--c-forest); color: #fff; }
+.chip[aria-pressed="true"] {
+  background: var(--c-forest);
+  color: #fff;
+}
+
+/* Food card */
+.food-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.food-image {
+  height: 120px;
+  background: linear-gradient(135deg, var(--c-forest) 0%, var(--c-gold) 100%);
+  display: block;
+}
+.food-card-body { padding: 1rem 1.1rem 1.1rem; }
+.food-price { display: inline-flex; align-items: center; }
+
+.badge-inseason {
+  background: #cfe5c4;
+  color: #1f4028;
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+.badge-premium {
+  background: var(--c-gold-soft);
+  color: #6a4d10;
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+/* Token pill (used in nav, food cards, threads) */
+.token-pill {
+  display: inline-block;
+  background: var(--c-forest);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+/* Account / auth */
+.account-card { max-width: 560px; }
+.auth-tabs {
+  display: inline-flex;
+  border: 1px solid var(--c-line);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--c-bg);
+}
+.auth-tab {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0.45rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--c-ink-soft);
+  cursor: pointer;
+}
+.auth-tab[aria-pressed="true"] {
+  background: var(--c-forest);
+  color: #fff;
+}
+
+/* Barter thread */
+.thread {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 1rem 1rem 0.5rem;
+}
+.thread-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.thread-msg {
+  max-width: 80%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 14px;
+  background: var(--c-bg);
+  border: 1px solid var(--c-line);
+  color: var(--c-ink);
+}
+.thread-msg.from-buyer {
+  align-self: flex-end;
+  background: #e3edd9;
+  border-color: #c7dcb9;
+}
+.thread-msg.from-vendor {
+  align-self: flex-start;
+  background: var(--c-gold-soft);
+  border-color: #e5d39a;
+}
+.thread-msg.kind-accept {
+  border-color: var(--c-forest);
+  background: #d9e9cf;
+}
+.thread-msg.kind-decline {
+  border-color: var(--c-rust);
+  background: #f4d7cc;
 }
