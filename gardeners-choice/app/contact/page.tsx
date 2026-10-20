@@ -1,4 +1,4 @@
-export const metadata = { title: "Contact — Gardener's Choice" };
+export const metadata = { title: "Contact — Hayward Harvest" };
 
 export default function Contact() {
   return (

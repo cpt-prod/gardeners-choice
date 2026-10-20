@@ -1,30 +1,64 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker, Tooltip } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+} from "react-leaflet";
 import L from "leaflet";
+import Link from "next/link";
 import type { Site } from "@/lib/types";
-
-// Fix default Leaflet icon paths (Next bundles them; we need explicit URLs)
-const foodBankIcon = new L.DivIcon({
-  className: "hc-marker hc-marker-food",
-  html: '<div style="background:#2f5d3a;width:22px;height:22px;border-radius:50%;border:3px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>',
-  iconSize: [22, 22],
-  iconAnchor: [11, 11],
-});
-
-const harvestIcon = new L.DivIcon({
-  className: "hc-marker hc-marker-harvest",
-  html: '<div style="background:#d99e2b;width:22px;height:22px;border-radius:50%;border:3px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>',
-  iconSize: [22, 22],
-  iconAnchor: [11, 11],
-});
+import MapSidePanel from "@/components/MapSidePanel";
 
 type Filter = "all" | "food-bank" | "harvest";
 
+/** Organic pulsing DivIcon markers. */
+function makeIcon(type: Site["type"], selected: boolean) {
+  const typeClass =
+    type === "food-bank" ? "hc-marker-food" : "hc-marker-harvest";
+  return new L.DivIcon({
+    className: `hc-marker ${typeClass}${selected ? " selected" : ""}`,
+    html: '<div class="hc-dot"></div>',
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+  });
+}
+
+/**
+ * Cinematic camera controller. Watches the selected site and glides the map
+ * to it with map.flyTo() (~1.5s). Lives inside MapContainer so it can call
+ * useMap().
+ */
+function MapController({ selected }: { selected: Site | null }) {
+  const map = useMap();
+
+  useEffect(() => {
+    // Recalculate size once the full-viewport container has mounted.
+    const t = setTimeout(() => map.invalidateSize(), 150);
+    return () => clearTimeout(t);
+  }, [map]);
+
+  useEffect(() => {
+    if (selected) {
+      map.flyTo([selected.lat, selected.lng], 15, {
+        duration: 1.5,
+        easeLinearity: 0.25,
+      });
+    }
+  }, [selected, map]);
+
+  return null;
+}
+
 export default function MapClient({ sites }: { sites: Site[] }) {
   const [filter, setFilter] = useState<Filter>("all");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
+
   useEffect(() => setMounted(true), []);
 
   const filtered = useMemo(
@@ -32,123 +66,134 @@ export default function MapClient({ sites }: { sites: Site[] }) {
     [filter, sites]
   );
 
-  // Center map on the average of filtered sites
+  const selected = useMemo(
+    () => sites.find((s) => s.id === selectedId) ?? null,
+    [selectedId, sites]
+  );
+
   const center: [number, number] = useMemo(() => {
-    if (filtered.length === 0) return [38.5816, -121.4944];
-    const lat = filtered.reduce((a, s) => a + s.lat, 0) / filtered.length;
-    const lng = filtered.reduce((a, s) => a + s.lng, 0) / filtered.length;
+    const base = sites.length ? sites : [{ lat: 37.6688, lng: -122.0808 }];
+    const lat = base.reduce((a, s) => a + s.lat, 0) / base.length;
+    const lng = base.reduce((a, s) => a + s.lng, 0) / base.length;
     return [lat, lng];
-  }, [filtered]);
+  }, [sites]);
+
+  const counts = useMemo(
+    () => ({
+      all: sites.length,
+      food: sites.filter((s) => s.type === "food-bank").length,
+      harvest: sites.filter((s) => s.type === "harvest").length,
+    }),
+    [sites]
+  );
+
+  function handleSelect(site: Site) {
+    setSelectedId(site.id);
+  }
 
   if (!mounted) {
     return (
-      <div className="map-wrap" style={{ display: "grid", placeItems: "center" }}>
+      <div
+        className="living-map"
+        style={{ display: "grid", placeItems: "center" }}
+      >
         <p>Loading map…</p>
       </div>
     );
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 64px)" }}>
-      <div
-        style={{
-          padding: "0.75rem 1.25rem",
-          background: "var(--c-surface)",
-          borderBottom: "1px solid var(--c-line)",
-          display: "flex",
-          gap: "0.5rem",
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
-        <strong style={{ marginRight: "0.5rem" }}>Show:</strong>
+    <div className="living-map">
+      {/* Floating glass navigation overlay */}
+      <nav className="map-floating-nav glass-panel">
+        <Link href="/" className="mfn-brand">
+          <span className="brand-mark" aria-hidden="true" />
+          Hayward Harvest
+        </Link>
+        <ul className="mfn-links">
+          <li>
+            <Link href="/">Home</Link>
+          </li>
+          <li>
+            <Link href="/about">About</Link>
+          </li>
+          <li>
+            <Link href="/donate">Donate</Link>
+          </li>
+          <li>
+            <Link href="/contact">Contact</Link>
+          </li>
+        </ul>
+      </nav>
+
+      {/* Floating filter pills */}
+      <div className="map-filter-bar glass-panel">
         <button
-          className={`btn ${filter === "all" ? "btn-primary" : "btn-ghost"}`}
+          className={`filter-pill${filter === "all" ? " active" : ""}`}
           onClick={() => setFilter("all")}
-          style={{ padding: "0.4rem 0.9rem", fontSize: "0.9rem" }}
         >
-          All ({sites.length})
+          All ({counts.all})
         </button>
         <button
-          className={`btn ${filter === "food-bank" ? "btn-primary" : "btn-ghost"}`}
+          className={`filter-pill${filter === "food-bank" ? " active" : ""}`}
           onClick={() => setFilter("food-bank")}
-          style={{ padding: "0.4rem 0.9rem", fontSize: "0.9rem" }}
         >
-          Food banks ({sites.filter((s) => s.type === "food-bank").length})
+          Food banks ({counts.food})
         </button>
         <button
-          className={`btn ${filter === "harvest" ? "btn-primary" : "btn-ghost"}`}
+          className={`filter-pill${filter === "harvest" ? " active" : ""}`}
           onClick={() => setFilter("harvest")}
-          style={{ padding: "0.4rem 0.9rem", fontSize: "0.9rem" }}
         >
-          Harvest sites ({sites.filter((s) => s.type === "harvest").length})
+          Harvest sites ({counts.harvest})
         </button>
       </div>
 
-      <div className="map-wrap" style={{ flex: 1 }}>
-        <MapContainer
-          className="map-container"
-          center={center}
-          zoom={12}
-          scrollWheelZoom
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {filtered.map((site) => (
-            <Marker
-              key={site.id}
-              position={[site.lat, site.lng]}
-              icon={site.type === "food-bank" ? foodBankIcon : harvestIcon}
-            >
-              <Popup>
-                <div>
-                  <span
-                    className={`badge ${
-                      site.type === "food-bank" ? "badge-food" : "badge-harvest"
-                    }`}
-                  >
-                    {site.type === "food-bank" ? "Food bank" : "Harvest site"}
-                  </span>
-                  <h3 style={{ marginTop: "0.5rem" }}>{site.name}</h3>
-                  <p className="popup-meta">
-                    {site.address}, {site.city}, {site.state} {site.zip}
-                    <br />
-                    <strong>Hours:</strong> {site.hours}
-                  </p>
-                  <p style={{ fontSize: "0.9rem", margin: "0 0 0.5rem" }}>
-                    {site.description}
-                  </p>
-                  {site.resources.length > 0 && (
-                    <ul className="popup-resources">
-                      {site.resources.map((r) => (
-                        <li key={r}>{r}</li>
-                      ))}
-                    </ul>
-                  )}
-                  <div className="popup-actions">
-                    <a className="btn btn-primary" href={`tel:${site.phone}`}>
-                      Call
-                    </a>
-                    <a className="btn btn-ghost" href={`mailto:${site.email}`}>
-                      Email
-                    </a>
-                    <a
-                      className="btn btn-ghost"
-                      href={`https://www.openstreetmap.org/?mlat=${site.lat}&mlon=${site.lng}#map=17/${site.lat}/${site.lng}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Directions
-                    </a>
-                  </div>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      </div>
+      {/* Dual-mode side panel */}
+      <MapSidePanel
+        sites={filtered}
+        selected={selected}
+        onSelect={handleSelect}
+        onBack={() => setSelectedId(null)}
+        collapsed={panelCollapsed}
+      />
+
+      {/* Mobile panel toggle */}
+      <button
+        className="msp-toggle glass-panel"
+        onClick={() => setPanelCollapsed((c) => !c)}
+      >
+        {panelCollapsed ? "Show list" : "Hide list"}
+      </button>
+
+      {/* The map */}
+      <MapContainer
+        className="map-container"
+        center={center}
+        zoom={11}
+        zoomControl={false}
+        scrollWheelZoom
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <MapController selected={selected} />
+        {filtered.map((site) => (
+          <Marker
+            key={site.id}
+            position={[site.lat, site.lng]}
+            icon={makeIcon(site.type, selected?.id === site.id)}
+            eventHandlers={{ click: () => handleSelect(site) }}
+          >
+            <Popup>
+              <h3 style={{ marginBottom: "0.25rem" }}>{site.name}</h3>
+              <p style={{ fontSize: "0.85rem", margin: 0 }}>
+                {site.city}, {site.state}
+              </p>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
     </div>
   );
 }
