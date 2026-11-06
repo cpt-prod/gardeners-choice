@@ -29,6 +29,9 @@ yarn-error.log*
 /.data/
 /dev.log
 
+# uploaded media (local disk storage)
+/uploads/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

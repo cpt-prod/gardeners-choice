@@ -11,6 +11,7 @@ import {
   sessionCookieOptions,
   SESSION_COOKIE,
 } from "@/lib/auth";
+import { validateAnswers } from "@/lib/questionnaire";
 
 export const dynamic = "force-dynamic";
 
@@ -63,6 +64,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const qa = validateAnswers(
+      (typeof body.answers === "object" && body.answers !== null
+        ? body.answers
+        : {}) as Record<string, unknown>
+    );
+    if (!qa.ok) {
+      return NextResponse.json({ error: qa.error }, { status: 400 });
+    }
+
     const existing = db
       .prepare("SELECT id FROM users WHERE username = ?")
       .get(username);
@@ -76,6 +86,22 @@ export async function POST(req: NextRequest) {
       `INSERT INTO users (id, username, passwordHash, displayName, bio, createdAt)
        VALUES (?, ?, ?, ?, '', ?)`
     ).run(id, username, hashPassword(password), displayName, now);
+
+    db.prepare(
+      `INSERT INTO questionnaires
+         (id, userId, fullName, email, visitMarket, visitCoffee, householdSize, description, createdAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).run(
+      crypto.randomUUID(),
+      id,
+      qa.answers.fullName,
+      qa.answers.email,
+      qa.answers.visitMarket ? 1 : 0,
+      qa.answers.visitCoffee ? 1 : 0,
+      qa.answers.householdSize,
+      qa.answers.description,
+      now
+    );
 
     const token = createSession(id);
     const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id) as UserRow;

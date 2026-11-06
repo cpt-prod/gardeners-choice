@@ -3,13 +3,20 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-inner">
         <div>
-          <strong>Hayward Harvest</strong>
-          <div style={{ opacity: 0.8, fontSize: "0.9rem" }}>
+          <strong style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span className="brand-mark" aria-hidden="true" style={{ width: 20, height: 20, borderRadius: 6 }} />
+            Hayward Harvest
+          </strong>
+          <div style={{ fontSize: "0.9rem", marginTop: "0.3rem" }}>
             A community project. No one should go hungry.
           </div>
         </div>
         <div>
           <a href="/map">Find food near you</a>
+          {" · "}
+          <a href="/marketplace">Marketplace</a>
+          {" · "}
+          <a href="/videos">Videos</a>
           {" · "}
           <a href="/donate">Donate</a>
           {" · "}
@@ -17,7 +24,7 @@ export default function Footer() {
           {" · "}
           <a href="/contact">Contact</a>
         </div>
-        <div style={{ marginTop: "1rem" }}>
+        <div>
           <a
             href="https://example.com/donate"
             target="_blank"

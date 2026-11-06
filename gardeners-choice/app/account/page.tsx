@@ -51,11 +51,10 @@ export default function AccountPage() {
   return (
     <section>
       <div className="container" style={{ maxWidth: 720 }}>
-        <h1>My account</h1>
-
-        <div className="card" style={{ marginBottom: "2rem" }}>
-          <h3 style={{ marginTop: 0 }}>{user.displayName}</h3>
-          <p style={{ color: "var(--c-ink-soft)", margin: "0 0 0.75rem" }}>
+        <div className="page-head glass-panel" style={{ marginBottom: "2rem" }}>
+          <p className="kicker">My account</p>
+          <h1 style={{ marginBottom: "0.2rem" }}>{user.displayName}</h1>
+          <p style={{ color: "var(--c-ink-soft)", margin: "0 0 1rem" }}>
             @{user.username} · member since{" "}
             {new Date(user.createdAt).toLocaleDateString()}
           </p>

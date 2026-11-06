@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import type { QuestionnaireAnswers } from "@/lib/questionnaire";
 
 export type Account = {
   id: string;
@@ -41,12 +42,19 @@ export function useAccount() {
     async (
       username: string,
       password: string,
-      displayName: string
+      displayName: string,
+      answers: QuestionnaireAnswers
     ): Promise<AuthResult> => {
       const res = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "signup", username, password, displayName }),
+        body: JSON.stringify({
+          action: "signup",
+          username,
+          password,
+          displayName,
+          answers,
+        }),
       });
       const data = await res.json();
       if (!res.ok) return { ok: false, error: data.error ?? "Sign-up failed." };

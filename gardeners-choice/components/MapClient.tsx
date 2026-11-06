@@ -115,6 +115,12 @@ export default function MapClient({ sites }: { sites: Site[] }) {
             <Link href="/">Home</Link>
           </li>
           <li>
+            <Link href="/marketplace">Marketplace</Link>
+          </li>
+          <li>
+            <Link href="/videos">Videos</Link>
+          </li>
+          <li>
             <Link href="/about">About</Link>
           </li>
           <li>

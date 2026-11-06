@@ -1,5 +1,9 @@
 import Link from "next/link";
 import { sites } from "@/lib/data";
+import GardenBackdrop from "@/components/GardenBackdrop";
+import DailyTip from "@/components/DailyTip";
+
+const cardLink = { color: "inherit", textDecoration: "none" } as const;
 
 export default function Home() {
   const foodBanks = sites.filter((s) => s.type === "food-bank").length;
@@ -7,9 +11,14 @@ export default function Home() {
 
   return (
     <>
-      <section className="hero">
-        <div className="container">
-          <h1>Find food. Share harvest. Look out for each other.</h1>
+      <section className="hero hero-video">
+        <GardenBackdrop />
+        <div className="container hero-content">
+          <p className="kicker">Hayward, CA · Community food network</p>
+          <h1>
+            Find food. Share harvest.{" "}
+            <span className="text-gradient">Look out for each other.</span>
+          </h1>
           <p className="lede">
             Hayward Harvest is a free community map of food banks, pantries, and
             harvesting sites. Whether you need a meal tonight or you have a tree
@@ -17,13 +26,13 @@ export default function Home() {
           </p>
           <div className="hero-actions">
             <Link href="/map" className="btn btn-primary">
-              Open the map
+              Open the living map →
             </Link>
-            <Link href="/donate" className="btn btn-ghost">
-              Donate
+            <Link href="/marketplace" className="btn btn-ghost">
+              Browse marketplace
             </Link>
-            <Link href="/about" className="btn btn-ghost">
-              Learn how it works
+            <Link href="/videos" className="btn btn-ghost">
+              Watch garden videos
             </Link>
           </div>
 
@@ -38,39 +47,7 @@ export default function Home() {
             </div>
             <div className="stat">
               <div className="stat-num">100%</div>
-              <div className="stat-lbl">Free, no signup</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <div className="container">
-          <h2>What you&rsquo;ll find here</h2>
-          <div className="grid">
-            <div className="card">
-              <span className="badge badge-food">Food bank</span>
-              <h3 style={{ marginTop: "0.5rem" }}>Pantry &amp; meal programs</h3>
-              <p>
-                Walk-in pantries, hot meal services, and emergency boxes. Most
-                don&rsquo;t require ID or proof of need.
-              </p>
-            </div>
-            <div className="card">
-              <span className="badge badge-harvest">Harvest site</span>
-              <h3 style={{ marginTop: "0.5rem" }}>Free produce in season</h3>
-              <p>
-                Community gardens, fruit orchards, and edible parks where you can
-                pick fresh, free food for your family.
-              </p>
-            </div>
-            <div className="card">
-              <span className="badge badge-food">Resources</span>
-              <h3 style={{ marginTop: "0.5rem" }}>More than food</h3>
-              <p>
-                Many sites also help with SNAP/CalFresh sign-up, WIC, baby
-                formula, hygiene kits, and case management.
-              </p>
+              <div className="stat-lbl">Free to use</div>
             </div>
           </div>
         </div>
@@ -78,8 +55,59 @@ export default function Home() {
 
       <section className="tight">
         <div className="container">
-          <div className="card" style={{ display: "flex", gap: "1.5rem", alignItems: "center", flexWrap: "wrap" }}>
-            <div style={{ flex: 1, minWidth: 240 }}>
+          <DailyTip />
+        </div>
+      </section>
+
+      <section>
+        <div className="container">
+          <p className="kicker">What you&rsquo;ll find here</p>
+          <h2>More than a map</h2>
+          <div className="grid">
+            <Link href="/map" className="card" style={cardLink}>
+              <div className="card-icon">🥫</div>
+              <span className="badge badge-food">Food bank</span>
+              <h3 style={{ marginTop: "0.5rem" }}>Pantry &amp; meal programs</h3>
+              <p>
+                Walk-in pantries, hot meal services, and emergency boxes. Most
+                don&rsquo;t require ID or proof of need.
+              </p>
+            </Link>
+            <Link href="/map" className="card" style={cardLink}>
+              <div className="card-icon gold">🍋</div>
+              <span className="badge badge-harvest">Harvest site</span>
+              <h3 style={{ marginTop: "0.5rem" }}>Free produce in season</h3>
+              <p>
+                Community gardens, fruit orchards, and edible parks where you can
+                pick fresh, free food for your family.
+              </p>
+            </Link>
+            <Link href="/marketplace" className="card" style={cardLink}>
+              <div className="card-icon gold">🧺</div>
+              <span className="badge badge-harvest">Marketplace</span>
+              <h3 style={{ marginTop: "0.5rem" }}>Neighbor-to-neighbor</h3>
+              <p>
+                Post your surplus harvest or pantry goods for free, and claim
+                what you need from people nearby.
+              </p>
+            </Link>
+            <Link href="/videos" className="card" style={cardLink}>
+              <div className="card-icon">🎬</div>
+              <span className="badge badge-food">Videos</span>
+              <h3 style={{ marginTop: "0.5rem" }}>Learn to grow</h3>
+              <p>
+                Short how-to clips and harvest tours shared by local gardeners.
+              </p>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="tight">
+        <div className="container">
+          <div className="card cta-band">
+            <div>
+              <p className="kicker">For organizers</p>
               <h2>Run a site? Get listed.</h2>
               <p>
                 If you operate a food pantry, community garden, or free harvest
@@ -87,8 +115,8 @@ export default function Home() {
                 and takes about five minutes.
               </p>
             </div>
-            <Link href="/contact" className="btn btn-primary">
-              Add a site
+            <Link href="/contact" className="btn btn-gold">
+              Add a site →
             </Link>
           </div>
         </div>
